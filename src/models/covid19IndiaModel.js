@@ -2,8 +2,6 @@ const cheerio = require("cheerio");
 const axios = require("axios");
 const geoJSON = require("../app_data/state_geoJSON").get("gJ");
 const helpline = require("../app_data/helpline").get("helpline");
-const interpolate = require("color-interpolate");
-let colormap = interpolate(["#fcd703", "#fc0303"]);
 
 function round(value, decimals) {
   return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
