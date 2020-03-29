@@ -1,0 +1,29 @@
+{
+  "name": "covid",
+  "version": "1.0.0",
+  "description": "covid-19 website",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js -e js,hbs"
+  },
+  "keywords": [
+    "corona",
+    "covid-19",
+    "covid19",
+    "corona-virus",
+    "coronavirus"
+  ],
+  "author": "Abhishek Singh",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
+    "color-interpolate": "^1.0.5",
+    "express": "^4.17.1",
+    "hbs": "^4.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
