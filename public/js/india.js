@@ -5,10 +5,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
   var geojson;
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-      }).addTo(map);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+  }).addTo(map);
 
   function createMap() {
     fetch(
@@ -39,9 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
         createLegends(
           arr,
           arr.map(arrElem => {
-            return getColor(
-              arrElem
-            );
+            return getColor(arrElem);
           })
         );
         geojson = L.geoJson(jData.data, {
@@ -57,8 +56,6 @@ document.addEventListener("DOMContentLoaded", function() {
   const createHTML = data => {
     let html = `<p>
                   <b>${data["State/UT"]}</b><br>
-                  Total Confirmed cases (Indian National):${data["Total Confirmed cases (Indian National)"]}<br>
-                  Total Confirmed cases ( Foreign National ):${data["Total Confirmed cases ( Foreign National )"]}<br>
                   Total Cummulative Confirmed cases:${data["Total Cummulative Confirmed cases"]}<br>
                   Cured/Discharged/Migrated:${data["Cured/Discharged/Migrated"]}<br>
                   Death:${data["Death"]}<br>
@@ -68,8 +65,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
   var arr = [];
   function createRange(max, min, steps = 10) {
-    console.log(max);
-    console.log(min);
     var range = parseInt(Math.ceil((max - min) / steps));
     for (var i = min; i < max; i = i + range) {
       arr.unshift(i);
@@ -161,7 +156,6 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   function createLegends(grades, colorArr) {
-    console.log(colorArr);
     grades.reverse();
     colorArr.reverse();
     var legend = L.control({ position: "bottomright" });

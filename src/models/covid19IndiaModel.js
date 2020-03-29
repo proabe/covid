@@ -4,19 +4,19 @@ const geoJSON = require("../app_data/state_geoJSON").get("gJ");
 const helpline = require("../app_data/helpline").get("helpline");
 
 function round(value, decimals) {
-  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+  return Number(Math.round(value + "e" + decimals) + "e-" + decimals);
 }
 
-const getIndiaData = async (geojsonStatus,sortBy) => {
+const getIndiaData = async (geojsonStatus, sortBy) => {
   try {
     const response = await axios.get("https://www.mohfw.gov.in/");
     const $ = cheerio.load(response.data);
     const buttonElem = $('button[class="collapsible"]');
     var dataJSON = [];
     var dataGeoJSON = {
-      "type": "FeatureCollection",
-      "features":[]
-    }
+      type: "FeatureCollection",
+      features: []
+    };
     if (
       buttonElem &&
       buttonElem
@@ -33,42 +33,45 @@ const getIndiaData = async (geojsonStatus,sortBy) => {
         looper = looper - 1;
       }
       let totalCases = parseInt(
-        $($(tableTrElem[looper]).children()[1]).text().replace( /[^\d.]/g, '' )
+        $($(tableTrElem[looper]).children()[1])
+          .text()
+          .replace(/[^\d.]/g, "")
       );
-      
+
       for (let index = 0; index < looper; index++) {
         let tr = tableTrElem[index];
         let tds = $(tr).children();
-        let perCentIndians = round((parseInt($(tds[2]).text()) / totalCases),2);
-        
-        let states_ut = $(tds[1]).text();
-        let ti = parseInt($(tds[2]).text());
-        let tf = parseInt($(tds[3]).text());
-        let tcc = ti + tf;
-        let cdm = parseInt($(tds[4]).text());
-        let death = parseInt($(tds[5]).text());
+        let perCentIndians = round(parseInt($(tds[2]).text()) / totalCases, 2);
 
-        
+        let states_ut = $(tds[1]).text();
+        // let ti = parseInt($(tds[2]).text());
+        // let tf = parseInt($(tds[3]).text());
+        let tcc = parseInt($(tds[2]).text());
+        let cdm = parseInt($(tds[3]).text());
+        let death = parseInt($(tds[4]).text());
+
         let dataObj = {
           "State/UT": states_ut,
-          "Total Confirmed cases (Indian National)": ti,
-          "Total Confirmed cases ( Foreign National )": tf,
           "Total Cummulative Confirmed cases": tcc,
           "Cured/Discharged/Migrated": cdm,
-          "Death": death
+          Death: death
         };
 
         dataJSON.push(dataObj);
       }
       if (sortBy) {
-        dataJSON = sortingObjects(dataJSON,sortBy,true);
+        dataJSON = sortingObjects(dataJSON, sortBy, true);
       }
       if (geojsonStatus) {
-        dataJSON.forEach((singleFeature) => {
+        dataJSON.forEach(singleFeature => {
           let feat = getStateGeometry(singleFeature["State/UT"]);
-          let insFeat = {"type": "Feature", "properties": singleFeature, geometry: feat.geometry};
+          let insFeat = {
+            type: "Feature",
+            properties: singleFeature,
+            geometry: feat.geometry
+          };
           dataGeoJSON.features.push(insFeat);
-        })
+        });
       }
 
       const icountElems = $('span[class="icount"]');
@@ -87,17 +90,17 @@ const getIndiaData = async (geojsonStatus,sortBy) => {
         };
       }
 
-      if(geojsonStatus){
+      if (geojsonStatus) {
         return {
           data: dataGeoJSON,
           statusCode: 200,
-          cummulativeData: cummulativeData?cummulativeData:false
-        };  
+          cummulativeData: cummulativeData ? cummulativeData : false
+        };
       }
       return {
         data: dataJSON,
         statusCode: 200,
-        cummulativeData: cummulativeData?cummulativeData:false
+        cummulativeData: cummulativeData ? cummulativeData : false
       };
     }
     throw new Error();
@@ -124,17 +127,17 @@ const getStateGeometry = name => {
   return false;
 };
 
-const sortingObjects = (arr,sortBy, reverse=false) => {
+const sortingObjects = (arr, sortBy, reverse = false) => {
   if (sortBy.toLowerCase().trim() !== "state/ut") {
-    arr.sort(function(a, b){
-        if (reverse) {
-          return b[sortBy]-a[sortBy];
-        }
-        return a[sortBy]-b[sortBy];
-    })
+    arr.sort(function(a, b) {
+      if (reverse) {
+        return b[sortBy] - a[sortBy];
+      }
+      return a[sortBy] - b[sortBy];
+    });
   }
   return arr;
-}
+};
 
 const getHelpline = () => {
   return helpline;
